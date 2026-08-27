@@ -13,7 +13,13 @@ This is an offline recreation of CounterSide's Break Room RAID minigame.
 - Result Screen
 <img width="2172" height="947" alt="c" src="https://github.com/user-attachments/assets/10b52586-a2af-43b8-a9e9-a2eaabea4b9a" />
 
+## How to Download
 
+- Click on the green "Code", then "Download ZIP".
+<img width="816" height="541" alt="d" src="https://github.com/user-attachments/assets/7bd86083-f47c-44a5-ba90-7020aaa05012" />
+
+- Once you finish downloading, right click the ZIP, and click "Extract All".
+- Double Click index.html to start playing.
 
 ## Play
 
@@ -39,6 +45,14 @@ Best score and fastest full clear are saved locally in the browser.
 # 로컬 카운터사이드 미니게임 "탕비실 침공작전"(AKA 카과게임) 아카이브
 
 이 폴더는 카운터사이드의 미니게임 "탕비실 침공작전" 의 오프라인 재구성 버전입니다.
+
+## 다운로드 하는 법
+
+- 초록색 "Code" 클릭 후, "Download ZIP" 클릭.
+<img width="816" height="541" alt="d" src="https://github.com/user-attachments/assets/7bd86083-f47c-44a5-ba90-7020aaa05012" />
+
+- 다운로드가 끝나면 ZIP을 우클릭 후, "압축 풀기" 클릭.
+- index.html 더블클릭하면 브라우저에서 플레이 가능.
 
 ## 게임 플레이
 
