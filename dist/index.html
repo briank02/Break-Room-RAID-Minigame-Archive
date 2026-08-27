@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#171925">
+  <title>Break Room RAID — Match Ten</title>
+  <link rel="stylesheet" href="styles.css?v=32">
+</head>
+<body>
+  <main class="stage" id="stage">
+    <div class="wallpaper" aria-hidden="true"></div>
+
+    <button class="language-button chrome-button" id="language-button" type="button" aria-label="Switch to Korean">
+      <span id="language-label">한국어</span>
+    </button>
+
+    <section class="game-frame" aria-label="Match Ten game">
+      <header class="hud" aria-label="Game status">
+        <img class="hud-characters" src="assets/characters.png" alt="" aria-hidden="true">
+
+        <div class="status-cluster">
+          <div class="readout score-readout">
+            <div class="readout-heading"><img src="assets/score.png" alt=""><span data-i18n="score">SCORE</span></div>
+            <strong id="score">0</strong>
+          </div>
+          <div class="readout time-readout" id="time-readout">
+            <div class="readout-heading"><img src="assets/time.png" alt=""><span data-i18n="timeLeft">TIME LEFT</span></div>
+            <strong id="time">120.00</strong>
+          </div>
+        </div>
+
+        <img class="hud-reaction" src="assets/reaction.png" alt="" aria-hidden="true">
+        <div class="hud-actions">
+          <button class="sound-button chrome-button" id="audio-button" type="button" aria-label="Mute audio" aria-pressed="false"><span aria-hidden="true">♫</span></button>
+          <button class="restart-button chrome-button" id="restart-button" type="button" aria-label="Restart game"><img src="assets/restart.png" alt=""></button>
+        </div>
+      </header>
+
+      <section class="play-area" aria-label="Match Ten board">
+        <div class="board-shell">
+          <div class="board" id="board" role="grid" aria-label="20 columns by 8 rows of numbered pantry items"></div>
+        </div>
+      </section>
+    </section>
+
+    <button class="back-button chrome-button" id="back-button" type="button" aria-label="Return to title">
+      <span aria-hidden="true">‹</span>
+    </button>
+
+    <div class="drag-box" id="drag-box" aria-hidden="true"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <section class="overlay title-screen visible" id="title-screen" aria-labelledby="game-title">
+      <div class="title-card">
+        <img class="title-layer title-cut-two" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_CUT_02.png" alt="" aria-hidden="true">
+        <img class="title-layer title-cut-three" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_CUT_03.png" alt="" aria-hidden="true">
+        <img class="title-layer title-cut-four" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_CUT_04.png" alt="" aria-hidden="true">
+        <img class="title-layer title-cut-one" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_CUT_01.png" alt="" aria-hidden="true">
+        <button class="title-rules-button" id="rules-button" type="button" data-i18n="rules">RULES</button>
+        <img class="title-characters" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_DECO_01.png" alt="Yoo Mina and Seo Yoon carrying pantry items">
+        <img id="game-title" class="title-logo" src="assets/TitleScreen/title_en.png" alt="Break Room RAID">
+        <img class="title-reaction" src="assets/TitleScreen/UI_SINGLE_MATCHTEN_DECO_02.png" alt="A frustrated CounterSide chibi character">
+        <button class="start-button" id="start-button" type="button" aria-label="Game Start">
+          <img id="title-start-image" src="assets/TitleScreen/start_en.png" alt="">
+          <img class="start-arrow" src="assets/UI_SINGLE_MATCHTEN_ICON_ARROW.png" alt="" aria-hidden="true">
+          <img class="start-arrow" src="assets/UI_SINGLE_MATCHTEN_ICON_ARROW.png" alt="" aria-hidden="true">
+        </button>
+        <div class="best-card">
+          <img class="best-score-title" src="assets/UI_SINGLE_MATCHTEN_SCORE.png" alt="Score">
+          <div class="best-line"><img src="assets/score.png" alt=""><strong id="title-best">0</strong></div>
+          <div class="best-line"><img src="assets/time.png" alt=""><strong id="title-best-time">0.00</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="overlay modal-screen" id="rules-screen" aria-labelledby="rules-title" hidden>
+      <div class="modal rule-card">
+        <img class="rules-title-image" id="rules-title" src="assets/UI_SINGLE_MATCHTEN_RULE.png" alt="Rules">
+        <ol>
+          <li data-i18n="rule1">Tap and drag to select a rectangular area.</li>
+          <li data-i18n="rule2">If the sum of the selected numbers equals 10, Yoo Mina will obtain a snack.</li>
+          <li data-i18n="rule3">Each snack collected adds 1 point.</li>
+          <li data-i18n="rule4">Collect as many snacks as possible within the time limit to earn a high score.</li>
+          <li data-i18n="rule5">If all snacks are collected before time runs out, the remaining time will be recorded.</li>
+        </ol>
+        <p class="keyboard-help" data-i18n-html="keyboardHelp">Keyboard: <kbd>R</kbd> restart · <kbd>M</kbd> mute</p>
+        <button class="primary-button" id="close-rules-button" type="button" data-i18n="gotIt">GOT IT</button>
+      </div>
+    </section>
+
+    <section class="overlay modal-screen" id="reroll-screen" aria-labelledby="reroll-title" hidden>
+      <div class="modal compact-card">
+        <h2 id="reroll-title" data-i18n="noMatches">NO MATCHES DETECTED</h2>
+        <p data-i18n="refreshPrompt">Press the refresh button.</p>
+        <button class="primary-button" id="reroll-button" type="button"><span class="reroll-icon" aria-hidden="true">↻</span><span data-i18n="reroll">REFRESH</span></button>
+      </div>
+    </section>
+
+    <section class="overlay result-screen modal-screen" id="result-screen" aria-labelledby="result-heading" hidden>
+      <div class="result-window">
+        <img class="result-heading" id="result-heading" src="assets/UI_SINGLE_MATCHTEN_RESULT.png" alt="Result">
+        <img class="result-character result-art-1" id="result-character" src="assets/UI_SINGLE_MATCHTEN_RESULT_01.png" alt="Result character illustration">
+        <div class="result-content">
+          <div class="result-stats">
+            <div class="result-stat result-score-stat">
+              <span class="result-stat-label"><img src="assets/score.png" alt=""><span data-i18n="score">SCORE</span></span>
+              <strong id="result-score">0</strong>
+              <p class="new-record" id="new-record" hidden data-i18n="newRecord">NEW RECORD</p>
+            </div>
+            <div class="result-stat result-time-stat">
+              <span class="result-stat-label"><img src="assets/time.png" alt=""><span data-i18n="timeLeft">TIME LEFT</span></span>
+              <strong id="result-time">0.00</strong>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="secondary-button" id="title-button" type="button" data-i18n="exit">EXIT</button>
+            <button class="primary-button" id="play-again-button" type="button"><span aria-hidden="true">↻</span> <span data-i18n="retry">RETRY</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="countdown" id="countdown" aria-live="assertive" hidden><span>3</span></div>
+  </main>
+
+  <audio id="music" src="assets/music.wav" preload="auto" loop></audio>
+  <audio id="count-sound" src="assets/count.wav" preload="auto"></audio>
+  <audio id="match-sound" src="assets/match.wav" preload="auto"></audio>
+  <audio id="start-sound" src="assets/start.wav" preload="auto"></audio>
+  <script src="game.js?v=19"></script>
+</body>
+</html>
