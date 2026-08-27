@@ -22,7 +22,7 @@ const COPY = {
     operationRules: "OPERATION RULES",
     rulesTitle: "Rules",
     rule1: "Tap and drag to select a rectangular area.",
-    rule2: "If the sum of the selected numbers equals 10, Yoo Mina will obtain a snack.",
+    rule2: "If the sum of the selected numbers equals 10, Yoo Mina will obtain those snacks.",
     rule3: "Each snack collected adds 1 point.",
     rule4: "Collect as many snacks as possible within the time limit to earn a high score.",
     rule5: "If all snacks are collected before time runs out, the remaining time will be recorded.",
