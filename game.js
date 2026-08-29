@@ -5,6 +5,7 @@ const ROWS = 8;
 const TOTAL = COLS * ROWS;
 const ROUND_SECONDS = 120;
 const TARGET = 10;
+const ENDGAME_THRESHOLD = 10;
 const DESIGN_WIDTH = 1920;
 const DESIGN_HEIGHT = 1080;
 const STORAGE_KEY = "counterside-matchten-best-v2-8x20";
@@ -237,6 +238,75 @@ function saveBest() {
 
 function randomValue() { return 1 + Math.floor(Math.random() * 9); }
 
+function shuffled(items) {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+  }
+  return result;
+}
+
+function randomMatchValues(count) {
+  const cuts = new Set();
+  while (cuts.size < count - 1) cuts.add(1 + Math.floor(Math.random() * (TARGET - 1)));
+
+  const boundaries = [0, ...cuts, TARGET].sort((left, right) => left - right);
+  return shuffled(boundaries.slice(1).map((boundary, index) => boundary - boundaries[index]));
+}
+
+function assignRandomPairs(indexes) {
+  const randomizedIndexes = shuffled(indexes);
+  for (let position = 0; position < randomizedIndexes.length; position += 2) {
+    const pair = randomMatchValues(2);
+    state.values[randomizedIndexes[position]] = pair[0];
+    state.values[randomizedIndexes[position + 1]] = pair[1];
+  }
+}
+
+function remainingTileIndexes() {
+  return state.values
+    .map((value, index) => value ? index : -1)
+    .filter(index => index >= 0);
+}
+
+function findActiveRectangleWithCount(targetCount) {
+  for (let minRow = 0; minRow < ROWS; minRow += 1) {
+    for (let minCol = 0; minCol < COLS; minCol += 1) {
+      for (let maxRow = minRow; maxRow < ROWS; maxRow += 1) {
+        for (let maxCol = minCol; maxCol < COLS; maxCol += 1) {
+          const indexes = [];
+          for (let row = minRow; row <= maxRow; row += 1) {
+            for (let col = minCol; col <= maxCol; col += 1) {
+              const index = row * COLS + col;
+              if (state.values[index]) indexes.push(index);
+            }
+          }
+          if (indexes.length === targetCount) return indexes;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+function prepareEndgameBoard() {
+  const remaining = remainingTileIndexes();
+  if (remaining.length < 2 || remaining.length > ENDGAME_THRESHOLD) return false;
+
+  // Seed one selectable match first, then randomize the rest into pairs.
+  // Odd boards start with a triple so a pair is never reserved ahead of it.
+  const firstMatchSize = remaining.length % 2 === 0 ? 2 : 3;
+  const firstMatch = findActiveRectangleWithCount(firstMatchSize) ?? remaining.slice(0, firstMatchSize);
+  const firstMatchIndexes = new Set(firstMatch);
+  const firstMatchValues = randomMatchValues(firstMatchSize);
+
+  firstMatch.forEach((index, position) => { state.values[index] = firstMatchValues[position]; });
+  assignRandomPairs(remaining.filter(index => !firstMatchIndexes.has(index)));
+
+  return true;
+}
+
 function createBoard() {
   elements.board.replaceChildren();
   for (let index = 0; index < TOTAL; index += 1) {
@@ -250,6 +320,11 @@ function createBoard() {
 }
 
 function fillBoard(remainingOnly = false) {
+  if (remainingOnly && prepareEndgameBoard()) {
+    renderBoard();
+    return;
+  }
+
   let attempts = 0;
   do {
     for (let index = 0; index < TOTAL; index += 1) {
@@ -524,7 +599,7 @@ function finishRound(cleared) {
   stopTimer();
   updateTimerDisplayOnly();
 
-  const remaining = cleared ? Math.max(0, Math.ceil(state.secondsLeft)) : 0;
+  const remaining = cleared ? Math.max(0, state.secondsLeft) : 0;
   const isRecord = state.score > state.best.score || (state.score === TOTAL && remaining > state.best.remaining);
   if (isRecord) {
     state.best = { score: state.score, remaining };
@@ -559,7 +634,6 @@ function reroll() {
   fillBoard(true);
   state.running = true;
   startTimer();
-  showToast(t("restocked"));
 }
 
 function confirmRestart() {
